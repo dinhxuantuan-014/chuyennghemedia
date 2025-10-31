@@ -37,7 +37,9 @@
     </div>
 
     <script>
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec"; // !!! DÁN URL WEB APP CỦA BẠN VÀO ĐÂY
+
+      const encodedUrl = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5N1JpSzVzbWt3MnJ4XzhTT00zaVV5cDVpZklBSXFuZ19La1VUdUdzUmFnV09OczYwblVWUGQyWl9nT0FXdjBTMTUvZXhlYw==';
+      const SCRIPT_URL = atob(encodedUrl);
 
       // --- CÁC HÀM CŨ GIỮ NGUYÊN ---
       document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
