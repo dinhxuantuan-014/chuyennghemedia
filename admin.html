@@ -10,7 +10,7 @@
       h1 { color: #00ff7f; text-align: center; margin-top: 0; }
       .form-group { margin-bottom: 25px; }
       label { display: block; margin-bottom: 8px; font-weight: bold; color: #b0b0b0; }
-      input[type="text"], input[type="password"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #6A6ADF; background-color: #1a1a2e; color: #e0e0e0; box-sizing: border-box; font-size: 1rem; }
+      input[type="text"], input[type="password"], input[type="number"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #6A6ADF; background-color: #1a1a2e; color: #e0e0e0; box-sizing: border-box; font-size: 1rem; }
       button { padding: 12px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; font-size: 1rem; transition: all 0.3s ease; }
       .btn-save { background-color: #00ff7f; color: #1a1a2e; }
       .btn-save:hover { background-color: #00e671; box-shadow: 0 0 15px rgba(0, 255, 127, 0.5); }
@@ -29,7 +29,6 @@
 <body>
     <div class="container">
       <h1>Trang Quản Trị</h1>
-
       <div class="form-group">
         <div class="switch-label">
             <span>Bật/Tắt Quảng Cáo Pop-up</span>
@@ -39,28 +38,30 @@
             </label>
         </div>
       </div>
-
       <div class="form-group">
         <label for="adSheetUrl">URL Google Sheet chứa link quảng cáo:</label>
         <input type="text" id="adSheetUrl" placeholder="Dán link sheet vào đây...">
       </div>
+      <div class="form-group">
+        <label for="adCooldownHours">Giờ giãn cách (cooldown) giữa 2 lần quảng cáo:</label>
+        <input type="number" id="adCooldownHours" placeholder="VD: 24 (tiếng)" min="0">
+      </div>
+      <div class="form-group">
+        <label for="adDailyLimit">Giới hạn quảng cáo / người dùng / ngày:</label>
+        <input type="number" id="adDailyLimit" placeholder="VD: 1 (lần)" min="0">
+      </div>
       
       <hr style="border-color: #6A6ADF; margin: 30px 0;">
-
       <div class="form-group">
         <label for="adminPassword">Mật khẩu Admin:</label>
         <input type="password" id="adminPassword" placeholder="Nhập mật khẩu để lưu hoặc khôi phục">
       </div>
-
       <button class="btn-save" onclick="saveSettings()">Lưu Cài Đặt</button>
       <button class="btn-reset" onclick="resetSettings()">Khôi Phục Mặc Định</button>
-
       <div id="status"></div>
     </div>
-
     <script>
-      // !!! QUAN TRỌNG: DÁN LINK WEB APP ĐÃ DEPLOY VÀO ĐÂY
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec"; 
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec"; // !!! DÁN URL WEB APP CỦA BẠN VÀO ĐÂY
 
       document.addEventListener('DOMContentLoaded', loadSettings);
 
@@ -68,86 +69,45 @@
         showStatus('Đang tải cài đặt...', 'info');
         try {
           const response = await fetch(`${SCRIPT_URL}?action=getAdminSettings`);
-          if (!response.ok) throw new Error('Network response was not ok.');
+          if (!response.ok) throw new Error('Lỗi mạng, không thể tải cài đặt.');
           const settings = await response.json();
-          
           if(settings.error) throw new Error(settings.error);
 
           document.getElementById('adsEnabled').checked = (settings.adsEnabled === 'true');
           document.getElementById('adSheetUrl').value = settings.adSheetUrl;
+          document.getElementById('adCooldownHours').value = settings.adCooldownHours;
+          document.getElementById('adDailyLimit').value = settings.adDailyLimit;
+
           showStatus('Tải cài đặt thành công!', 'success');
-        } catch (error) {
-          showStatus('Lỗi khi tải cài đặt: ' + error.message, 'error');
-        }
+        } catch (error) { showStatus('Lỗi khi tải cài đặt: ' + error.message, 'error'); }
       }
 
       async function saveSettings() {
+        const password = document.getElementById('adminPassword').value;
+        if (!password) { showStatus('Vui lòng nhập mật khẩu để lưu!', 'error'); return; }
         showStatus('Đang lưu...', 'info');
         const settingsPayload = {
           adsEnabled: document.getElementById('adsEnabled').checked.toString(),
           adSheetUrl: document.getElementById('adSheetUrl').value,
-          password: document.getElementById('adminPassword').value,
+          adCooldownHours: document.getElementById('adCooldownHours').value || '24',
+          adDailyLimit: document.getElementById('adDailyLimit').value || '1',
+          password: password,
         };
-
         try {
             const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                // Chuyển hướng để xử lý lỗi CORS khi POST từ trình duyệt
-                redirect: 'follow', 
+                method: 'POST', redirect: 'follow', 
                 body: JSON.stringify({ action: 'save', data: settingsPayload }),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
             });
-
             const result = await response.json();
-            if (result.success) {
-                showStatus(result.message, 'success');
-            } else {
-                showStatus(result.message || 'Có lỗi xảy ra', 'error');
-            }
-        } catch (error) {
-            showStatus('Lỗi kết nối: ' + error.message, 'error');
-        } finally {
-            document.getElementById('adminPassword').value = '';
-        }
+            if (result.success) { showStatus(result.message, 'success'); } 
+            else { showStatus(result.message || 'Có lỗi xảy ra', 'error'); }
+        } catch (error) { showStatus('Lỗi kết nối: ' + error.message, 'error'); } 
+        finally { document.getElementById('adminPassword').value = ''; }
       }
 
-      async function resetSettings() {
-        const password = document.getElementById('adminPassword').value;
-        if (!password) {
-            showStatus('Vui lòng nhập mật khẩu để khôi phục!', 'error');
-            return;
-        }
-        if (confirm('Bạn có chắc chắn muốn khôi phục tất cả cài đặt về mặc định không?')) {
-            showStatus('Đang khôi phục...', 'info');
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    redirect: 'follow',
-                    body: JSON.stringify({ action: 'reset', data: { password: password } }),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    showStatus(result.message, 'success');
-                    loadSettings(); // Tải lại cài đặt mặc định lên form
-                } else {
-                    showStatus(result.message || 'Có lỗi xảy ra', 'error');
-                }
-            } catch (error) {
-                showStatus('Lỗi kết nối: ' + error.message, 'error');
-            } finally {
-                document.getElementById('adminPassword').value = '';
-            }
-        }
-      }
-
-      function showStatus(message, type) {
-        const statusDiv = document.getElementById('status');
-        statusDiv.textContent = message;
-        statusDiv.style.color = type === 'success' ? '#00ff7f' : (type === 'error' ? '#ff5252' : '#b0b0b0');
-      }
+      async function resetSettings() { /* giữ nguyên */ const password = document.getElementById('adminPassword').value; if (!password) { showStatus('Vui lòng nhập mật khẩu để khôi phục!', 'error'); return; } if (confirm('Bạn có chắc chắn muốn khôi phục tất cả cài đặt về mặc định không?')) { showStatus('Đang khôi phục...', 'info'); try { const response = await fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({ action: 'reset', data: { password: password } }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); const result = await response.json(); if (result.success) { showStatus(result.message, 'success'); loadSettings(); } else { showStatus(result.message || 'Có lỗi xảy ra', 'error'); } } catch (error) { showStatus('Lỗi kết nối: ' + error.message, 'error'); } finally { document.getElementById('adminPassword').value = ''; } } }
+      function showStatus(message, type) { /* giữ nguyên */ const statusDiv = document.getElementById('status'); statusDiv.textContent = message; statusDiv.style.color = type === 'success' ? '#00ff7f' : (type === 'error' ? '#ff5252' : '#b0b0b0'); }
     </script>
 </body>
-
 </html>
