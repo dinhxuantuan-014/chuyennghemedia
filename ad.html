@@ -61,6 +61,9 @@
             box-sizing: border-box;
             font-family: 'Montserrat', sans-serif;
         }
+        input[type="password"] {
+            border-color: var(--accent-red);
+        }
         textarea {
             min-height: 120px;
             resize: vertical;
@@ -77,6 +80,7 @@
             transition: background-color .3s;
             display: block;
             width: 100%;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #c43a3a;
@@ -106,6 +110,11 @@
             <label for="ad-sheet-url">URL Google Sheet chứa link quảng cáo</label>
             <input type="url" id="ad-sheet-url" placeholder="https://docs.google.com/spreadsheets/d/...">
         </div>
+        
+        <div class="form-group">
+            <label for="admin-password">Mật khẩu Admin</label>
+            <input type="password" id="admin-password" placeholder="Nhập mật khẩu để có thể lưu" required>
+        </div>
 
         <button id="save-button" onclick="saveSettings()">Lưu Cài Đặt</button>
         <div id="status"></div>
@@ -114,10 +123,10 @@
     <script>
         const announcementInput = document.getElementById('announcement-text');
         const adSheetUrlInput = document.getElementById('ad-sheet-url');
+        const passwordInput = document.getElementById('admin-password');
         const saveButton = document.getElementById('save-button');
         const statusDiv = document.getElementById('status');
 
-        // Tải cài đặt hiện tại khi mở trang
         document.addEventListener('DOMContentLoaded', () => {
             statusDiv.textContent = 'Đang tải cài đặt...';
             google.script.run.withSuccessHandler(populateForm).getAdminSettings();
@@ -130,6 +139,13 @@
         }
 
         function saveSettings() {
+            const password = passwordInput.value;
+            if (!password) {
+                statusDiv.style.color = '#F44336'; // Red
+                statusDiv.textContent = 'Vui lòng nhập mật khẩu để lưu!';
+                return;
+            }
+
             saveButton.disabled = true;
             statusDiv.textContent = 'Đang lưu...';
 
@@ -138,11 +154,13 @@
                 adSheetUrl: adSheetUrlInput.value
             };
 
-            google.script.run.withSuccessHandler(onSaveSuccess).saveAdminSettings(settings);
+            google.script.run.withSuccessHandler(onSaveSuccess).saveAdminSettings(settings, password);
         }
         
         function onSaveSuccess(response) {
             saveButton.disabled = false;
+            passwordInput.value = ''; // Xóa mật khẩu sau khi thử lưu
+
             if (response.success) {
                 statusDiv.style.color = '#4CAF50'; // Green
                 statusDiv.textContent = response.message;
