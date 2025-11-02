@@ -107,23 +107,32 @@ body{padding:0;align-items:stretch}
       
       let cache={ads:[],timestamp:0};
       let dlLink='';
-      const CACHE_TIME=3e5; // 5 phút
+      const CACHE_TIME=3e5;
       
-      // Khởi tạo
+      // Debounce helper
+      const debounce=(fn,delay)=>{
+        let timer;
+        return function(...args){
+          clearTimeout(timer);
+          timer=setTimeout(()=>fn.apply(this,args),delay);
+        };
+      };
+      
+      // Khởi tạo - preload ads ngay
       (async()=>{
-        await loadAds();
+        loadAds(); // Load async không chờ
         const p=location.pathname;
         if(p.length>1){
           const c=p.substring(1);
           if(/^\d+$/.test(c)){
             const inp=document.getElementById('searchInput');
             inp.value=c;
-            inp.focus();
+            // Không auto focus để tránh keyboard popup trên mobile
           }
         }
       })();
 
-      // Load quảng cáo với cache
+      // Load quảng cáo - optimized
       async function loadAds(){
         const now=Date.now();
         if(cache.ads.length&&(now-cache.timestamp)<CACHE_TIME)return;
@@ -131,7 +140,7 @@ body{padding:0;align-items:stretch}
         try{
           const res=await fetch(`${API}?action=getAds`,{
             method:'GET',
-            cache:'no-store'
+            cache:'force-cache' // Sử dụng browser cache
           });
           if(!res.ok)throw new Error(`HTTP ${res.status}`);
           const d=await res.json();
@@ -142,14 +151,12 @@ body{padding:0;align-items:stretch}
           }
         }catch(e){
           console.error('Ads load error:',e);
-          cache.ads=[];
+          if(!cache.ads.length)cache.ads=[]; // Chỉ reset nếu chưa có data
         }
       }
 
-      // Random ad
       const getRandAd=()=>cache.ads.length?cache.ads[Math.floor(Math.random()*cache.ads.length)]:null;
 
-      // Popup
       function showPop(link){
         const ad=getRandAd();
         if(!ad){
@@ -167,29 +174,41 @@ body{padding:0;align-items:stretch}
         const visit=document.getElementById('popup-visit');
         const close=document.getElementById('popup-close');
         
-        visit.onclick=()=>{
+        const openLinks=()=>{
           window.open(ad.link,'_blank','noopener,noreferrer');
           window.open(dlLink,'_blank','noopener,noreferrer');
           pop.style.display='none';
         };
-
-        close.onclick=()=>{
+        
+        const closeOnly=()=>{
           window.open(dlLink,'_blank','noopener,noreferrer');
           pop.style.display='none';
         };
+        
+        visit.onclick=openLinks;
+        close.onclick=closeOnly;
       }
 
-      // Search handler
+      // Search handler - OPTIMIZED
       const inp=document.getElementById('searchInput');
       const btn=document.getElementById('searchButton');
       
-      inp.addEventListener('keyup',e=>{
-        if(e.key==='Enter')search();
+      // Chỉ listen Enter key, không xử lý mọi keyup
+      inp.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){
+          e.preventDefault();
+          search();
+        }
       });
       
       btn.addEventListener('click',search);
 
+      // Prevent multiple simultaneous searches
+      let isSearching=false;
+
       async function search(){
+        if(isSearching)return;
+        
         const code=inp.value.trim();
         const stat=document.getElementById('status');
         const res=document.getElementById('results');
@@ -199,6 +218,7 @@ body{padding:0;align-items:stretch}
           return;
         }
         
+        isSearching=true;
         stat.innerText="Đang tìm kiếm...";
         btn.disabled=true;
         res.style.display='none';
@@ -213,12 +233,13 @@ body{padding:0;align-items:stretch}
           display(data);
         }catch(e){
           stat.innerText="Lỗi: "+e.message;
+        }finally{
           btn.disabled=false;
+          isSearching=false;
         }
       }
       
       function display(d){
-        btn.disabled=false;
         const stat=document.getElementById('status');
         const res=document.getElementById('results');
         
@@ -316,27 +337,32 @@ body{padding:0;align-items:stretch}
     
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded',()=>{
-        tsParticles.load("particle-canvas",{
-          fpsLimit:60,
-          particles:{
-            number:{value:60,density:{enable:!0,value_area:800}},
-            color:{value:"#A0A0E0"},
-            shape:{type:"circle"},
-            opacity:{value:.5,random:!0},
-            size:{value:{min:1,max:3}},
-            links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},
-            move:{enable:!0,speed:1.5,direction:"none",out_mode:"out"}
-          },
-          interactivity:{
-            detect_on:"canvas",
-            events:{onhover:{enable:!0,mode:"repulse"},resize:!0},
-            modes:{repulse:{distance:200,duration:.4}}
-          },
-          detectRetina:!0
-        });
+      // Lazy load particles sau khi page load xong
+      window.addEventListener('load',()=>{
+        setTimeout(()=>{
+          tsParticles.load("particle-canvas",{
+            fpsLimit:60,
+            particles:{
+              number:{value:40,density:{enable:!0,value_area:800}}, // Giảm số particles
+              color:{value:"#A0A0E0"},
+              shape:{type:"circle"},
+              opacity:{value:.5,random:!0},
+              size:{value:{min:1,max:3}},
+              links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},
+              move:{enable:!0,speed:1,direction:"none",out_mode:"out"} // Giảm speed
+            },
+            interactivity:{
+              detect_on:"canvas",
+              events:{
+                onhover:{enable:!0,mode:"repulse"},
+                resize:!0
+              },
+              modes:{repulse:{distance:150,duration:.3}} // Giảm distance và duration
+            },
+            detectRetina:!0
+          });
+        },500); // Delay 500ms để trang load xong
       });
     </script>
 </body>
 </html>
-
