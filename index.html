@@ -3,6 +3,8 @@
 <head>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TIÊU ĐỀ MỚI CHO TAB TRÌNH DUYỆT -->
+    <title>Share Zone - Tài Nguyên Media Designer</title>
     <link rel="icon" href="https://raw.githubusercontent.com/dinhxuantuan-014/sheet/refs/heads/main/logo%20chuyen%20nghe%20media.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +13,9 @@
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
-    <div class="container"><!-- Giữ nguyên HTML container của bạn -->
-        <h1 class="main-title">Chuyện nghề Media</h1>
+    <div class="container">
+        <!-- TIÊU ĐỀ MỚI TRÊN TRANG -->
+        <h1 class="main-title">Share Zone</h1>
         <div class="social-links">
           <a href="https://www.facebook.com/groups/chuyennghemedia/" target="_blank">Facebook Group</a>
           <a href="https://discord.gg/vM8cnmxwfs" target="_blank">Discord</a>
@@ -39,17 +42,10 @@
     <!-- CẬP NHẬT: Thêm script này để đọc code từ URL -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Lấy đường dẫn từ URL, ví dụ: "/111111"
         const path = window.location.pathname;
-
-        // Kiểm tra xem có code trong đường dẫn không (đường dẫn không phải là "/")
         if (path && path.length > 1) {
-          // Trích xuất code bằng cách loại bỏ dấu "/" ở đầu
           const codeFromPath = path.substring(1);
-
-          // Kiểm tra đơn giản để đảm bảo đó là một chuỗi số
           if (/^\d+$/.test(codeFromPath)) {
-            // Nếu là số, điền nó vào ô tìm kiếm
             document.getElementById('searchInput').value = codeFromPath;
           }
         }
@@ -110,7 +106,6 @@
             a.href = link;
             a.target = "_blank";
             a.textContent = getLinkDetails(link).text;
-            // ĐÃ XÓA event listener gọi hàm quảng cáo ở đây
             li.appendChild(a);
             linkList.appendChild(li);
           });
@@ -125,11 +120,6 @@
       function displayError(e) { /* giữ nguyên */ document.getElementById('searchButton').disabled = false; document.getElementById('status').innerText = "Lỗi: " + e.message; }
       
       function getLinkDetails(url) { /* giữ nguyên */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
-
-      // --- CÁC HÀM LIÊN QUAN ĐẾN QUẢNG CÁO ĐÃ ĐƯỢC XÓA ---
-      // getOrSetUserId() - ĐÃ XÓA
-      // handleLinkClick() - ĐÃ XÓA
-
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
