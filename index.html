@@ -3,26 +3,89 @@
 <head>
     <base target="_top">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- TIÊU ĐỀ MỚI CHO TAB TRÌNH DUYỆT -->
-    <title>Share Zone - Tài Nguyên Media Designer</title>
     <link rel="icon" href="https://raw.githubusercontent.com/dinhxuantuan-014/sheet/refs/heads/main/logo%20chuyen%20nghe%20media.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>/* Giữ nguyên CSS của bạn */:root{--accent-red:#E54B4B;--accent-pink:#D972FF;--main-blue:#4A4AEB;--dark-blue:#3B3B9A;--border-color:#6A6ADF;--container-bg:rgba(45,45,120,0.8);--dark-bg:#2A2A72;--text-color:#F0F0FF;--subtle-text-color:#A0A0E0;--accent-gradient:linear-gradient(90deg,var(--main-blue),var(--accent-pink))}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}body{font-family:'Montserrat',sans-serif;background-color:var(--dark-bg);color:var(--text-color);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;box-sizing:border-box}#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}.container{background-color:var(--container-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:30px 40px;border-radius:12px;box-shadow:0 0 40px rgba(74,74,235,.4);border:1px solid var(--border-color);width:100%;max-width:800px;text-align:center;box-sizing:border-box;animation:fadeIn 1s ease-out forwards;max-height:90vh;overflow-y:auto;position:relative;z-index:1}@keyframes fadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}.main-title{font-size:2.8rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;margin-bottom:20px}.social-links{margin-bottom:30px;border-bottom:1px solid var(--border-color);padding-bottom:30px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:15px}.social-links strong{font-size:1rem;color:var(--subtle-text-color);margin-right:10px}.social-links a{background-color:rgba(74,74,235,.2);color:var(--text-color);padding:8px 15px;border-radius:20px;text-decoration:none;font-size:.9rem;transition:all .3s ease}.social-links a:hover{background:var(--accent-gradient);color:#FFF;transform:translateY(-3px);box-shadow:0 4px 15px rgba(217,114,255,.4)}.search-wrapper{display:flex;gap:10px;margin-bottom:15px}#searchInput{flex-grow:1;padding:12px 15px;background-color:var(--dark-bg);border:1px solid var(--border-color);border-radius:8px;font-size:1rem;color:var(--text-color);transition:all .3s ease}#searchInput:focus{outline:none;border-color:var(--main-blue);box-shadow:0 0 10px rgba(74,74,235,.5)}#searchButton{padding:12px 25px;background:var(--accent-red);color:#FFF;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:700;transition:all .3s ease;animation:pulseGlow 2.5s infinite ease-in-out}#searchButton:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(229,75,75,.6)}@keyframes pulseGlow{0%{box-shadow:0 0 5px rgba(229,75,75,.2)}50%{box-shadow:0 0 20px rgba(229,75,75,.5)}100%{box-shadow:0 0 5px rgba(229,75,75,.2)}}#status{min-height:20px;font-style:italic;color:var(--subtle-text-color)}#results{margin-top:30px;text-align:left;border-top:1px solid var(--border-color);padding-top:30px}#result-title{font-size:2rem;color:var(--text-color);background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;margin-bottom:25px}#results h3{margin-top:25px;color:var(--subtle-text-color);font-weight:400;border-bottom:1px solid var(--border-color);padding-bottom:10px}.result-list{list-style-type:none;padding-left:0}.result-list li{background:rgba(42,42,114,.8);margin-bottom:10px;padding:15px;border-radius:8px;border-left:4px solid var(--border-color);word-wrap:break-word;font-size:.95rem;display:flex;align-items:center;gap:12px;transition:all .3s ease}.result-list li:hover{border-left-color:var(--accent-pink);transform:translateX(5px)}.result-list a{color:var(--text-color);text-decoration:none;transition:color .3s;display:block;width:100%}.result-list a:hover{color:var(--subtle-text-color)}@media (max-width:600px){body{padding:0;align-items:stretch}.container{padding:20px 15px;border-radius:0;border:none;height:100%;max-height:100vh;box-shadow:none}.main-title{font-size:2.2rem}.search-wrapper{flex-direction:column}}</style>
+    <style>
+:root{--accent-red:#E54B4B;--accent-pink:#D972FF;--main-blue:#4A4AEB;--dark-blue:#3B3B9A;--border-color:#6A6ADF;--container-bg:rgba(45,45,120,0.8);--dark-bg:#2A2A72;--text-color:#F0F0FF;--subtle-text-color:#A0A0E0;--accent-gradient:linear-gradient(90deg,var(--main-blue),var(--accent-pink))}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
+body{font-family:'Montserrat',sans-serif;background-color:var(--dark-bg);color:var(--text-color);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;box-sizing:border-box}
+#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
+.container{background-color:var(--container-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:30px 40px;border-radius:12px;box-shadow:0 0 40px rgba(74,74,235,.4);border:1px solid var(--border-color);width:100%;max-width:800px;text-align:center;box-sizing:border-box;animation:fadeIn 1s ease-out forwards;max-height:90vh;overflow-y:auto;position:relative;z-index:1}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.main-title{font-size:2.8rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;margin-bottom:20px}
+.social-links{margin-bottom:30px;border-bottom:1px solid var(--border-color);padding-bottom:30px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:15px}
+.social-links strong{font-size:1rem;color:var(--subtle-text-color);margin-right:10px}
+.social-links a{background-color:rgba(74,74,235,.2);color:var(--text-color);padding:8px 15px;border-radius:20px;text-decoration:none;font-size:.9rem;transition:all .3s ease}
+.social-links a:hover{background:var(--accent-gradient);color:#FFF;transform:translateY(-3px);box-shadow:0 4px 15px rgba(217,114,255,.4)}
+.search-wrapper{display:flex;gap:10px;margin-bottom:15px}
+#searchInput{flex-grow:1;padding:12px 15px;background-color:var(--dark-bg);border:1px solid var(--border-color);border-radius:8px;font-size:1rem;color:var(--text-color);transition:all .3s ease}
+#searchInput:focus{outline:none;border-color:var(--main-blue);box-shadow:0 0 10px rgba(74,74,235,.5)}
+#searchButton{padding:12px 25px;background:var(--accent-red);color:#FFF;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:700;transition:all .3s ease;animation:pulseGlow 2.5s infinite ease-in-out}
+#searchButton:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(229,75,75,.6)}
+@keyframes pulseGlow{0%{box-shadow:0 0 5px rgba(229,75,75,.2)}50%{box-shadow:0 0 20px rgba(229,75,75,.5)}100%{box-shadow:0 0 5px rgba(229,75,75,.2)}}
+#status{min-height:20px;font-style:italic;color:var(--subtle-text-color)}
+#results{margin-top:30px;text-align:left;border-top:1px solid var(--border-color);padding-top:30px}
+#result-title{font-size:2rem;color:var(--text-color);background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:0;margin-bottom:25px}
+#results h3{margin-top:25px;color:var(--subtle-text-color);font-weight:400;border-bottom:1px solid var(--border-color);padding-bottom:10px}
+.result-list{list-style-type:none;padding-left:0}
+.result-list li{background:rgba(42,42,114,.8);margin-bottom:10px;padding:15px;border-radius:8px;border-left:4px solid var(--border-color);word-wrap:break-word;font-size:.95rem;display:flex;align-items:center;gap:12px;transition:all .3s ease}
+.result-list li:hover{border-left-color:var(--accent-pink);transform:translateX(5px)}
+.result-list a{color:var(--text-color);text-decoration:none;transition:color .3s;display:block;width:100%;cursor:pointer}
+.result-list a:hover{color:var(--subtle-text-color)}
+
+/* Popup Styles */
+.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;justify-content:center;align-items:center;animation:fadeInOverlay 0.3s ease}
+@keyframes fadeInOverlay{from{opacity:0}to{opacity:1}}
+.popup-content{background:var(--container-bg);backdrop-filter:blur(10px);padding:30px;border-radius:12px;box-shadow:0 0 50px rgba(74,74,235,.6);border:2px solid var(--border-color);max-width:500px;width:90%;text-align:center;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.popup-content h2{color:var(--text-color);margin-top:0;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.popup-content p{color:var(--subtle-text-color);margin:20px 0;font-size:1.1rem;line-height:1.6}
+.popup-buttons{display:flex;gap:15px;justify-content:center;margin-top:25px}
+.popup-btn{padding:12px 30px;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s ease}
+.popup-btn-primary{background:var(--accent-gradient);color:#FFF}
+.popup-btn-primary:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(217,114,255,.6)}
+.popup-btn-secondary{background:rgba(74,74,235,.2);color:var(--text-color)}
+.popup-btn-secondary:hover{background:rgba(74,74,235,.4)}
+
+@media (max-width:600px){
+body{padding:0;align-items:stretch}
+.container{padding:20px 15px;border-radius:0;border:none;height:100%;max-height:100vh;box-shadow:none}
+.main-title{font-size:2.2rem}
+.search-wrapper{flex-direction:column}
+.popup-content{padding:20px;width:85%}
+.popup-buttons{flex-direction:column}
+}
+    </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
+    
+    <!-- Popup -->
+    <div id="popup" class="popup-overlay">
+        <div class="popup-content">
+            <h2>🎉 Thông Báo</h2>
+            <p id="popup-message">Đang tải...</p>
+            <div class="popup-buttons">
+                <button class="popup-btn popup-btn-primary" id="popup-visit">Truy Cập Link</button>
+                <button class="popup-btn popup-btn-secondary" id="popup-close">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- TIÊU ĐỀ MỚI TRÊN TRANG -->
-        <h1 class="main-title">Chuyện Nghề Media</h1>
+        <h1 class="main-title">Chuyện nghề Media</h1>
         <div class="social-links">
           <a href="https://www.facebook.com/groups/chuyennghemedia/" target="_blank">Facebook Group</a>
           <a href="https://discord.gg/vM8cnmxwfs" target="_blank">Discord</a>
           <a href="https://t.me/chuyennghemedia/" target="_blank">Telegram</a>
           <a href="https://zalo.me/g/monpsz855" target="_blank">Zalo Group</a>
         </div>
-        <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Nhập code vào đây..."><button id="searchButton" onclick="handleSearch()">Tìm Kiếm</button></div>
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Nhập code vào đây...">
+            <button id="searchButton" onclick="handleSearch()">Tìm Kiếm</button>
+        </div>
         <div id="status"></div>
         <div id="results" style="display:none;">
             <h2 id="result-title"></h2>
@@ -39,9 +102,17 @@
         </div>
     </div>
 
-    <!-- CẬP NHẬT: Thêm script này để đọc code từ URL -->
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlMHuwLKc1dgjxBj4P3gPdn6d6TPyQkty84M2Z5rQllC8YaBMDUyO-tWQ8lx3_Ww5x/exec';
+      const ADS_SHEET_ID = '1Hh5P4Q2iyh9otURDFBO_IDTybRS-_0ZJ4Jqe8WFz-z8';
+      
+      let adsCache = [];
+      let currentDownloadLink = '';
+
+      // Load danh sách quảng cáo khi trang được tải
+      document.addEventListener('DOMContentLoaded', async function() {
+        await loadAdsList();
+        
         const path = window.location.pathname;
         if (path && path.length > 1) {
           const codeFromPath = path.substring(1);
@@ -50,27 +121,110 @@
           }
         }
       });
-    </script>
 
-    <script>
-      const encodedUrl = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5N1JpSzVzbWt3MnJ4XzhTT00zaVV5cDVpZklBSXFuZ19La1VUdUdzUmFnV09OczYwblVWUGQyWl9nT0FXdjBTMTUvZXhlYw==';
-      const SCRIPT_URL = atob(encodedUrl);
+      // Load danh sách quảng cáo từ Google Sheet qua Apps Script
+      async function loadAdsList() {
+        try {
+          const response = await fetch(`${SCRIPT_URL}?action=getAds`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          
+          if (data.ads && Array.isArray(data.ads)) {
+            adsCache = data.ads;
+            console.log(`Đã tải ${adsCache.length} quảng cáo`);
+          }
+        } catch (error) {
+          console.error('Lỗi khi tải danh sách quảng cáo:', error);
+          // Nếu không tải được, vẫn cho phép download bình thường
+          adsCache = [];
+        }
+      }
 
-      document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
+      // Lấy quảng cáo ngẫu nhiên
+      function getRandomAd() {
+        if (adsCache.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * adsCache.length);
+        return adsCache[randomIndex];
+      }
 
-      async function handleSearch() { /* giữ nguyên */ const code = document.getElementById('searchInput').value; const statusDiv = document.getElementById('status'); const searchButton = document.getElementById('searchButton'); statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code."; searchButton.disabled = true; document.getElementById('results').style.display = 'none'; if (!code) { searchButton.disabled = false; return; } try { const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`); if (!response.ok) { throw new Error(`Lỗi mạng: ${response.statusText}`); } const data = await response.json(); displayResults(data); } catch (error) { displayError(error); } }
+      // Hiển thị popup quảng cáo
+      function showAdPopup(downloadLink) {
+        const ad = getRandomAd();
+        if (!ad) {
+          window.open(downloadLink, '_blank');
+          return;
+        }
+
+        currentDownloadLink = downloadLink;
+        const popup = document.getElementById('popup');
+        const message = document.getElementById('popup-message');
+        
+        // Hiển thị tiêu đề từ cột B
+        message.textContent = ad.title;
+        popup.style.display = 'flex';
+
+        // Nút truy cập quảng cáo
+        document.getElementById('popup-visit').onclick = function() {
+          window.open(ad.link, '_blank');
+          window.open(currentDownloadLink, '_blank');
+          popup.style.display = 'none';
+        };
+
+        // Nút đóng
+        document.getElementById('popup-close').onclick = function() {
+          window.open(currentDownloadLink, '_blank');
+          popup.style.display = 'none';
+        };
+      }
+
+      document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+          handleSearch();
+        }
+      });
+
+      async function handleSearch() {
+        const code = document.getElementById('searchInput').value;
+        const statusDiv = document.getElementById('status');
+        const searchButton = document.getElementById('searchButton');
+        
+        statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code.";
+        searchButton.disabled = true;
+        document.getElementById('results').style.display = 'none';
+        
+        if (!code) {
+          searchButton.disabled = false;
+          return;
+        }
+        
+        try {
+          const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`);
+          if (!response.ok) {
+            throw new Error(`Lỗi mạng: ${response.statusText}`);
+          }
+          const data = await response.json();
+          displayResults(data);
+        } catch (error) {
+          displayError(error);
+        }
+      }
       
       function displayResults(e) {
         document.getElementById('searchButton').disabled = false;
         const statusDiv = document.getElementById('status');
         const resultsDiv = document.getElementById('results');
+        
         if (e.error) {
           statusDiv.innerText = e.error;
           resultsDiv.style.display = 'none';
           return;
         }
+        
         statusDiv.innerText = "";
         document.getElementById('result-title').innerText = e.title;
+        
         const passwordSection = document.getElementById('password-section');
         const passwordList = document.getElementById('password-list');
         passwordList.innerHTML = '';
@@ -84,6 +238,7 @@
         } else {
           passwordSection.style.display = 'none';
         }
+        
         const noteSection = document.getElementById('note-section');
         const noteList = document.getElementById('note-list');
         noteList.innerHTML = '';
@@ -97,15 +252,19 @@
         } else {
           noteSection.style.display = 'none';
         }
+        
         const linkList = document.getElementById('link-list');
         linkList.innerHTML = '';
         if (e.links && e.links.length > 0) {
           e.links.forEach(link => {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.href = link;
-            a.target = "_blank";
+            a.href = 'javascript:void(0)';
             a.textContent = getLinkDetails(link).text;
+            a.onclick = function(event) {
+              event.preventDefault();
+              showAdPopup(link);
+            };
             li.appendChild(a);
             linkList.appendChild(li);
           });
@@ -114,17 +273,61 @@
           li.textContent = 'Không có link download.';
           linkList.appendChild(li);
         }
+        
         resultsDiv.style.display = 'block';
       }
 
-      function displayError(e) { /* giữ nguyên */ document.getElementById('searchButton').disabled = false; document.getElementById('status').innerText = "Lỗi: " + e.message; }
+      function displayError(e) {
+        document.getElementById('searchButton').disabled = false;
+        document.getElementById('status').innerText = "Lỗi: " + e.message;
+      }
       
-      function getLinkDetails(url) { /* giữ nguyên */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
+      function getLinkDetails(url) {
+        const lowerUrl = url.toLowerCase();
+        const linkMappings = [
+          { domain: 'drive.google.com', text: 'Link Google Drive' },
+          { domain: 'photos.app.goo.gl', text: 'Link Google Photo' },
+          { domain: 'fshare.vn', text: 'Link Fshare' },
+          { domain: 'mega.nz', text: 'Link Mega' },
+          { domain: 'mediafire.com', text: 'Link MediaFire' },
+          { domain: 'terabox.com', text: 'Link Terabox' },
+          { domain: 't.me', text: 'Link Telegram' },
+          { domain: 'telegram', text: 'Link Telegram' },
+          { domain: 'dropbox.com', text: 'Link Dropbox' },
+          { domain: 'usersdrive.com', text: 'Link UsersDrive' }
+        ];
+        
+        for (const mapping of linkMappings) {
+          if (lowerUrl.includes(mapping.domain)) {
+            return { text: mapping.text };
+          }
+        }
+        return { text: 'Link Download' };
+      }
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => { tsParticles.load("particle-canvas", { /* Giữ nguyên cấu hình particles */ fpsLimit:60,particles:{number:{value:80,density:{enable:!0,value_area:800}},color:{value:"#A0A0E0"},shape:{type:"circle"},opacity:{value:.5,random:!0},size:{value:{min:1,max:3},random:!0},links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},move:{enable:!0,speed:2,direction:"none",random:!1,straight:!1,out_mode:"out",bounce:!1}},interactivity:{detect_on:"canvas",events:{onhover:{enable:!0,mode:"repulse"},resize:!0},modes:{repulse:{distance:250,duration:.4}}},detectRetina:!0}); });
+      document.addEventListener('DOMContentLoaded', () => {
+        tsParticles.load("particle-canvas", {
+          fpsLimit:60,
+          particles:{
+            number:{value:80,density:{enable:!0,value_area:800}},
+            color:{value:"#A0A0E0"},
+            shape:{type:"circle"},
+            opacity:{value:.5,random:!0},
+            size:{value:{min:1,max:3},random:!0},
+            links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},
+            move:{enable:!0,speed:2,direction:"none",random:!1,straight:!1,out_mode:"out",bounce:!1}
+          },
+          interactivity:{
+            detect_on:"canvas",
+            events:{onhover:{enable:!0,mode:"repulse"},resize:!0},
+            modes:{repulse:{distance:250,duration:.4}}
+          },
+          detectRetina:!0
+        });
+      });
     </script>
 </body>
 </html>
-
