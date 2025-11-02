@@ -36,12 +36,22 @@
         </div>
     </div>
 
+    <!-- CẬP NHẬT: Thêm script này để đọc code từ URL -->
     <script>
-      // CẬP NHẬT: Script để điền code từ URL vào ô tìm kiếm
       document.addEventListener('DOMContentLoaded', function() {
-        const initialCode = '<?= initialCode ?>';
-        if (initialCode) {
-          document.getElementById('searchInput').value = initialCode;
+        // Lấy đường dẫn từ URL, ví dụ: "/111111"
+        const path = window.location.pathname;
+
+        // Kiểm tra xem có code trong đường dẫn không (đường dẫn không phải là "/")
+        if (path && path.length > 1) {
+          // Trích xuất code bằng cách loại bỏ dấu "/" ở đầu
+          const codeFromPath = path.substring(1);
+
+          // Kiểm tra đơn giản để đảm bảo đó là một chuỗi số
+          if (/^\d+$/.test(codeFromPath)) {
+            // Nếu là số, điền nó vào ô tìm kiếm
+            document.getElementById('searchInput').value = codeFromPath;
+          }
         }
       });
     </script>
