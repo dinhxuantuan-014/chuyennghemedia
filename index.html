@@ -49,6 +49,7 @@
     </script>
     
     <script>
+      // **ĐÃ CẬP NHẬT:** Sử dụng link script mới của bạn
       const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec';
 
       document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
@@ -99,15 +100,12 @@
                   const li = document.createElement('li'); 
                   const a = document.createElement('a');
                   
-                  // **ĐÃ THAY ĐỔI:** Tạo URL trung gian
-                  // URL sẽ có dạng: .../exec?action=redirect&url=[link_download_goc]
+                  // Tạo URL trỏ đến trang chờ/trung gian
                   const redirectUrl = `${SCRIPT_URL}?action=redirect&url=${encodeURIComponent(link)}`;
                   
-                  a.href = redirectUrl; // href trỏ đến trang trung gian
+                  a.href = redirectUrl; 
                   a.target = "_blank"; 
                   a.textContent = getLinkDetails(link).text; 
-
-                  // **KHÔNG CẦN** event listener nữa, vì trình duyệt sẽ tự điều hướng
                   
                   li.appendChild(a); 
                   linkList.appendChild(li); 
@@ -123,12 +121,10 @@
       function displayError(e) { /* Giữ nguyên không đổi */ document.getElementById('searchButton').disabled = false; document.getElementById('status').innerText = "Lỗi: " + e.message; }
       
       function getLinkDetails(url) { /* Giữ nguyên không đổi */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
-
-      // **ĐÃ XÓA:** Hàm handleLinkClick không còn cần thiết
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.com/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => { tsParticles.load("particle-canvas", { /* Giữ nguyên cấu hình particles */ fpsLimit:60,particles:{number:{value:80,density:{enable:!0,value_area:800}},color:{value:"#A0A0E0"},shape:{type:"circle"},opacity:{value:.5,random:!0},size:{value:{min:1,max:3},random:!0},links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},move:{enable:!0,speed:2,direction:"none",random:!1,straight:!1,out_mode:"out",bounce:!1}},interactivity:{detect_on:"canvas",events:{onhover:{enable:!0,mode:"repulse"},resize:!0},modes:{repulse:{distance:250,duration:.4}}},detectRetina:!0}); });
+      document.addEventListener('DOMContentLoaded', () => { tsParticles.load("particle-canvas", { /* Giữ nguyên cấu hình particles */ fpsLimit:60,particles:{number:{value:80,density:{enable:!0,value_area:800}},color:{value:"#A0A0E0"},shape:{type:"circle"},opacity:{value:.5,random:!0},size:{value:{min:1,max:3},random:!0},links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},move:{enable:!0,speed:2,direction:"none",random!1,straight:!1,out_mode:"out",bounce:!1}},interactivity:{detect_on:"canvas",events:{onhover:{enable:!0,mode:"repulse"},resize:!0},modes:{repulse:{distance:250,duration:.4}}},detectRetina:!0}); });
     </script>
 </body>
 </html>
