@@ -49,8 +49,7 @@
     </script>
     
     <script>
-      const encodedUrl = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5N1JpSzVzbWt3MnJ4XzhTT00zaVV5cDVpZklBSXFuZ19La1VUdUdzUmFnV09OczYwblVWUGQyWl9nT0FXdjBTMTUvZXhlYw==';
-      const SCRIPT_URL = atob(encodedUrl);
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec';
 
       document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
       
@@ -98,14 +97,18 @@
           if (e.links && e.links.length > 0) { 
               e.links.forEach(link => { 
                   const li = document.createElement('li'); 
-                  const a = document.createElement('a'); 
-                  a.href = link; 
+                  const a = document.createElement('a');
+                  
+                  // **ĐÃ THAY ĐỔI:** Tạo URL trung gian
+                  // URL sẽ có dạng: .../exec?action=redirect&url=[link_download_goc]
+                  const redirectUrl = `${SCRIPT_URL}?action=redirect&url=${encodeURIComponent(link)}`;
+                  
+                  a.href = redirectUrl; // href trỏ đến trang trung gian
                   a.target = "_blank"; 
                   a.textContent = getLinkDetails(link).text; 
-                  // **CẬP NHẬT:** Thêm event listener để gọi hàm quảng cáo
-                  a.addEventListener('click', function(event) {
-                      handleLinkClick(event, link);
-                  });
+
+                  // **KHÔNG CẦN** event listener nữa, vì trình duyệt sẽ tự điều hướng
+                  
                   li.appendChild(a); 
                   linkList.appendChild(li); 
               }); 
@@ -121,31 +124,7 @@
       
       function getLinkDetails(url) { /* Giữ nguyên không đổi */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
 
-      /**
-       * **HÀM MỚI:** Xử lý click link, mở link chính và gọi server lấy link quảng cáo.
-       */
-      async function handleLinkClick(event, linkUrl) {
-        // Ngăn hành vi mặc định của thẻ <a>
-        event.preventDefault();
-
-        // 1. Mở link chính ngay lập tức để ưu tiên tốc độ cho người dùng
-        window.open(linkUrl, '_blank');
-
-        // 2. Gọi server để lấy link quảng cáo và mở nó sau
-        try {
-          const response = await fetch(`${SCRIPT_URL}?action=getAdLink`);
-          if (!response.ok) return; // Nếu lỗi thì không làm gì cả
-
-          const data = await response.json();
-          // Nếu có link quảng cáo trả về, mở nó trong tab mới
-          if (data && data.adUrl) {
-            window.open(data.adUrl, '_blank');
-          }
-        } catch (err) {
-          // Lỗi xảy ra cũng không ảnh hưởng tới người dùng, chỉ log ra console
-          console.error("Lỗi khi lấy link quảng cáo: ", err);
-        }
-      }
+      // **ĐÃ XÓA:** Hàm handleLinkClick không còn cần thiết
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
