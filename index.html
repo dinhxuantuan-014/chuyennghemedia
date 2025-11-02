@@ -11,7 +11,7 @@
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
-    <div class="container"><!-- Giữ nguyên HTML container của bạn -->
+    <div class="container">
         <h1 class="main-title">Chuyện nghề Media</h1>
         <div class="social-links">
           <a href="https://www.facebook.com/groups/chuyennghemedia/" target="_blank">Facebook Group</a>
@@ -36,85 +36,107 @@
         </div>
     </div>
 
-    <!-- CẬP NHẬT: Thêm script này để đọc code từ URL -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Lấy đường dẫn từ URL, ví dụ: "/111111"
-        const path = window.location.pathname;
-
-        // Kiểm tra xem có code trong đường dẫn không (đường dẫn không phải là "/")
-        if (path && path.length > 1) {
-          // Trích xuất code bằng cách loại bỏ dấu "/" ở đầu
-          const codeFromPath = path.substring(1);
-
-          // Kiểm tra đơn giản để đảm bảo đó là một chuỗi số
-          if (/^\d+$/.test(codeFromPath)) {
-            // Nếu là số, điền nó vào ô tìm kiếm
-            document.getElementById('searchInput').value = codeFromPath;
-          }
-        }
-      });
-    </script>
-    
     <script>
       const encodedUrl = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5N1JpSzVzbWt3MnJ4XzhTT00zaVV5cDVpZklBSXFuZ19La1VUdUdzUmFnV09OczYwblVWUGQyWl9nT0FXdjBTMTUvZXhlYw==';
       const SCRIPT_URL = atob(encodedUrl);
 
-      // --- CÁC HÀM CŨ GIỮ NGUYÊN ---
       document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
-      async function handleSearch() { /* giữ nguyên */ const code = document.getElementById('searchInput').value; const statusDiv = document.getElementById('status'); const searchButton = document.getElementById('searchButton'); statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code."; searchButton.disabled = true; document.getElementById('results').style.display = 'none'; if (!code) { searchButton.disabled = false; return; } try { const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`); if (!response.ok) { throw new Error(`Lỗi mạng: ${response.statusText}`); } const data = await response.json(); displayResults(data); } catch (error) { displayError(error); } }
-      function displayResults(e) { /* giữ nguyên */ document.getElementById('searchButton').disabled = false; const statusDiv = document.getElementById('status'); const resultsDiv = document.getElementById('results'); if (e.error) { statusDiv.innerText = e.error; resultsDiv.style.display = 'none'; return; } statusDiv.innerText = ""; document.getElementById('result-title').innerText = e.title; const passwordSection = document.getElementById('password-section'); const passwordList = document.getElementById('password-list'); passwordList.innerHTML = ''; if (e.passwords && e.passwords.length > 0) { e.passwords.forEach(pass => { const li = document.createElement('li'); li.textContent = pass; passwordList.appendChild(li); }); passwordSection.style.display = 'block'; } else { passwordSection.style.display = 'none'; } const noteSection = document.getElementById('note-section'); const noteList = document.getElementById('note-list'); noteList.innerHTML = ''; if (e.notes && e.notes.length > 0) { e.notes.forEach(note => { const li = document.createElement('li'); li.textContent = note; noteList.appendChild(li); }); noteSection.style.display = 'block'; } else { noteSection.style.display = 'none'; } const linkList = document.getElementById('link-list'); linkList.innerHTML = ''; if (e.links && e.links.length > 0) { e.links.forEach(link => { const li = document.createElement('li'); const a = document.createElement('a'); a.href = link; a.target = "_blank"; a.textContent = getLinkDetails(link).text; a.addEventListener('click', function(event) { handleLinkClick(event, link); }); li.appendChild(a); linkList.appendChild(li); }); } else { const li = document.createElement('li'); li.textContent = 'Không có link download.'; linkList.appendChild(li); } resultsDiv.style.display = 'block'; }
-      function displayError(e) { /* giữ nguyên */ document.getElementById('searchButton').disabled = false; document.getElementById('status').innerText = "Lỗi: " + e.message; }
-      function getLinkDetails(url) { /* giữ nguyên */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
       
-      // --- CÁC HÀM MỚI VÀ CẬP NHẬT ---
-      
-      /**
-       * Tạo hoặc lấy ID người dùng duy nhất từ localStorage.
-       */
-      function getOrSetUserId() {
-        let userId = localStorage.getItem('cnm_userId');
-        if (!userId) {
-          // Tạo một chuỗi ngẫu nhiên đơn giản làm ID
-          userId = Date.now().toString(36) + Math.random().toString(36).substr(2);
-          localStorage.setItem('cnm_userId', userId);
+      async function handleSearch() {
+        const code = document.getElementById('searchInput').value;
+        const statusDiv = document.getElementById('status');
+        const searchButton = document.getElementById('searchButton');
+        statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code.";
+        searchButton.disabled = true;
+        document.getElementById('results').style.display = 'none';
+        if (!code) {
+          searchButton.disabled = false;
+          return;
         }
-        return userId;
+        try {
+          const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`);
+          if (!response.ok) {
+            throw new Error(`Lỗi mạng: ${response.statusText}`);
+          }
+          const data = await response.json();
+          displayResults(data);
+        } catch (error) {
+          displayError(error);
+        }
       }
 
-      /**
-       * Xử lý click link, kiểm tra cooldown và gọi server để lấy link quảng cáo.
-       */
-      async function handleLinkClick(event, linkUrl) {
-        event.preventDefault();
-        window.open(linkUrl, '_blank'); // Mở link chính ngay lập tức
-
-        // Kiểm tra thời gian giãn cách (cooldown) ở phía client
-        const lastAdTime = parseInt(localStorage.getItem('cnm_lastAdTime')) || 0;
-        const cooldownHours = parseFloat(localStorage.getItem('cnm_cooldownHours')) || 24;
-        const cooldownMilliseconds = cooldownHours * 60 * 60 * 1000;
-
-        if (Date.now() < lastAdTime + cooldownMilliseconds) {
-          console.log("Đang trong thời gian cooldown, không hiển thị quảng cáo.");
-          return; // Dừng lại nếu chưa hết thời gian cooldown
+      function displayResults(e) {
+        document.getElementById('searchButton').disabled = false;
+        const statusDiv = document.getElementById('status');
+        const resultsDiv = document.getElementById('results');
+        if (e.error) {
+          statusDiv.innerText = e.error;
+          resultsDiv.style.display = 'none';
+          return;
         }
+        statusDiv.innerText = "";
+        document.getElementById('result-title').innerText = e.title;
+        const passwordSection = document.getElementById('password-section');
+        const passwordList = document.getElementById('password-list');
+        passwordList.innerHTML = '';
+        if (e.passwords && e.passwords.length > 0) {
+          e.passwords.forEach(pass => {
+            const li = document.createElement('li');
+            li.textContent = pass;
+            passwordList.appendChild(li);
+          });
+          passwordSection.style.display = 'block';
+        } else {
+          passwordSection.style.display = 'none';
+        }
+        const noteSection = document.getElementById('note-section');
+        const noteList = document.getElementById('note-list');
+        noteList.innerHTML = '';
+        if (e.notes && e.notes.length > 0) {
+          e.notes.forEach(note => {
+            const li = document.createElement('li');
+            li.textContent = note;
+            noteList.appendChild(li);
+          });
+          noteSection.style.display = 'block';
+        } else {
+          noteSection.style.display = 'none';
+        }
+        const linkList = document.getElementById('link-list');
+        linkList.innerHTML = '';
+        if (e.links && e.links.length > 0) {
+          e.links.forEach(link => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = link;
+            a.target = "_blank";
+            a.textContent = getLinkDetails(link).text;
+            // Không còn event listener ở đây, link sẽ hoạt động bình thường
+            li.appendChild(a);
+            linkList.appendChild(li);
+          });
+        } else {
+          const li = document.createElement('li');
+          li.textContent = 'Không có link download.';
+          linkList.appendChild(li);
+        }
+        resultsDiv.style.display = 'block';
+      }
 
-        // Nếu đã hết cooldown, gọi server để kiểm tra giới hạn hàng ngày
-        try {
-          const userId = getOrSetUserId();
-          const response = await fetch(`${SCRIPT_URL}?action=getAdLink&userId=${userId}`);
-          if (!response.ok) return;
+      function displayError(e) {
+        document.getElementById('searchButton').disabled = false;
+        document.getElementById('status').innerText = "Lỗi: " + e.message;
+      }
 
-          const data = await response.json();
-          if (data && data.adUrl) {
-            window.open(data.adUrl, '_blank');
-            // Lưu lại thời gian và cài đặt cooldown mới nhất từ server
-            localStorage.setItem('cnm_lastAdTime', Date.now().toString());
-            localStorage.setItem('cnm_cooldownHours', data.adCooldownHours.toString());
+      function getLinkDetails(url) {
+        const lowerUrl = url.toLowerCase();
+        const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }];
+        for (const mapping of linkMappings) {
+          if (lowerUrl.includes(mapping.domain)) {
+            return { text: mapping.text };
           }
-        } catch (err) {
-          console.error("Lỗi khi lấy link quảng cáo: ", err);
         }
+        return { text: 'Link Download' };
       }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
