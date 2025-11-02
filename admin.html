@@ -29,10 +29,9 @@
 <body>
     <div class="container">
       <h1>Trang Quản Trị</h1>
-      <p style="text-align: center; color: #ffeb3b; background: rgba(255,235,59,0.1); padding: 10px; border-radius: 5px;">Lưu ý: Các cài đặt quảng cáo bên dưới không còn tác dụng với hệ thống pop-up mới.</p>
       <div class="form-group">
         <div class="switch-label">
-            <span>Bật/Tắt Quảng Cáo Pop-up (Không còn hiệu lực)</span>
+            <span>Bật/Tắt Quảng Cáo Pop-up</span>
             <label class="switch">
               <input type="checkbox" id="adsEnabled">
               <span class="slider"></span>
@@ -40,15 +39,15 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="adSheetUrl">URL Google Sheet chứa link quảng cáo (Không còn hiệu lực):</label>
+        <label for="adSheetUrl">URL Google Sheet chứa link quảng cáo:</label>
         <input type="text" id="adSheetUrl" placeholder="Dán link sheet vào đây...">
       </div>
       <div class="form-group">
-        <label for="adCooldownHours">Giờ giãn cách (Không còn hiệu lực):</label>
+        <label for="adCooldownHours">Giờ giãn cách (cooldown) giữa 2 lần quảng cáo:</label>
         <input type="number" id="adCooldownHours" placeholder="VD: 24 (tiếng)" min="0">
       </div>
       <div class="form-group">
-        <label for="adDailyLimit">Giới hạn quảng cáo / ngày (Không còn hiệu lực):</label>
+        <label for="adDailyLimit">Giới hạn quảng cáo / người dùng / ngày:</label>
         <input type="number" id="adDailyLimit" placeholder="VD: 1 (lần)" min="0">
       </div>
       
@@ -62,7 +61,7 @@
       <div id="status"></div>
     </div>
     <script>
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec";
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7RiK5smkw2rx_8SOM3iUyp5ifIAIqng_KkUTuGsRagWONs60nUVPd2Z_gOAWv0S15/exec"; // !!! DÁN URL WEB APP CỦA BẠN VÀO ĐÂY
 
       document.addEventListener('DOMContentLoaded', loadSettings);
 
@@ -107,8 +106,8 @@
         finally { document.getElementById('adminPassword').value = ''; }
       }
 
-      async function resetSettings() { const password = document.getElementById('adminPassword').value; if (!password) { showStatus('Vui lòng nhập mật khẩu để khôi phục!', 'error'); return; } if (confirm('Bạn có chắc chắn muốn khôi phục tất cả cài đặt về mặc định không?')) { showStatus('Đang khôi phục...', 'info'); try { const response = await fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({ action: 'reset', data: { password: password } }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); const result = await response.json(); if (result.success) { showStatus(result.message, 'success'); loadSettings(); } else { showStatus(result.message || 'Có lỗi xảy ra', 'error'); } } catch (error) { showStatus('Lỗi kết nối: ' + error.message, 'error'); } finally { document.getElementById('adminPassword').value = ''; } } }
-      function showStatus(message, type) { const statusDiv = document.getElementById('status'); statusDiv.textContent = message; statusDiv.style.color = type === 'success' ? '#00ff7f' : (type === 'error' ? '#ff5252' : '#b0b0b0'); }
+      async function resetSettings() { /* giữ nguyên */ const password = document.getElementById('adminPassword').value; if (!password) { showStatus('Vui lòng nhập mật khẩu để khôi phục!', 'error'); return; } if (confirm('Bạn có chắc chắn muốn khôi phục tất cả cài đặt về mặc định không?')) { showStatus('Đang khôi phục...', 'info'); try { const response = await fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify({ action: 'reset', data: { password: password } }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } }); const result = await response.json(); if (result.success) { showStatus(result.message, 'success'); loadSettings(); } else { showStatus(result.message || 'Có lỗi xảy ra', 'error'); } } catch (error) { showStatus('Lỗi kết nối: ' + error.message, 'error'); } finally { document.getElementById('adminPassword').value = ''; } } }
+      function showStatus(message, type) { /* giữ nguyên */ const statusDiv = document.getElementById('status'); statusDiv.textContent = message; statusDiv.style.color = type === 'success' ? '#00ff7f' : (type === 'error' ? '#ff5252' : '#b0b0b0'); }
     </script>
 </body>
 </html>
