@@ -118,8 +118,27 @@ body{padding:0;align-items:stretch}
         };
       };
       
+      // Clean URL - Remove tracking params
+      function cleanURL(){
+        const url=new URL(window.location.href);
+        const trackingParams=['fbclid','gclid','utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+        let cleaned=false;
+        
+        trackingParams.forEach(param=>{
+          if(url.searchParams.has(param)){
+            url.searchParams.delete(param);
+            cleaned=true;
+          }
+        });
+        
+        if(cleaned){
+          window.history.replaceState({},'',url.pathname+url.search);
+        }
+      }
+      
       // Khởi tạo - preload ads ngay
       (async()=>{
+        cleanURL(); // Clean URL trước tiên
         loadAds(); // Load async không chờ
         const p=location.pathname;
         if(p.length>1){
