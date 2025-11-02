@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
-:root{--accent-red:#E54B4B;--accent-pink:#D972FF;--main-blue:#4A4AEB;--dark-blue:#3B3B9A;--border-color:#6A6ADF;--container-bg:rgba(45,45,120,0.8);--dark-bg:#2A2A72;--text-color:#F0F0FF;--subtle-text-color:#A0A0E0;--accent-gradient:linear-gradient(90deg,var(--main-blue),var(--accent-pink))}
+:root{--accent-red:#E54B4B;--accent-pink:#D972FF;--main-blue:#4A4AEB;--dark-blue:#3B3B9A;--border-color:#6A6ADF;--container-bg:rgba(45,45,120,0.8);--dark-bg:#2A2A72;--text-color:#F0F0FF;--subtle-text-color:#A0A0E0;--accent-gradient:linear-gradient(90deg,var(--main-blue),var(--accent-pink));--success-green:#4CAF50;--warning-orange:#FF9800}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden}
 body{font-family:'Montserrat',sans-serif;background-color:var(--dark-bg);color:var(--text-color);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
@@ -23,11 +23,25 @@ body{font-family:'Montserrat',sans-serif;background-color:var(--dark-bg);color:v
 .search-wrapper{display:flex;gap:10px;margin-bottom:15px}
 #searchInput{flex-grow:1;padding:12px 15px;background-color:var(--dark-bg);border:1px solid var(--border-color);border-radius:8px;font-size:1rem;color:var(--text-color);transition:border-color .2s ease}
 #searchInput:focus{outline:none;border-color:var(--main-blue);box-shadow:0 0 10px rgba(74,74,235,.5)}
-#searchButton{padding:12px 25px;background:var(--accent-red);color:#FFF;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:700;transition:all .2s ease;will-change:transform}
+#searchButton{padding:12px 25px;background:var(--accent-red);color:#FFF;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:700;transition:all .2s ease;will-change:transform;display:flex;align-items:center;gap:8px;justify-content:center;min-width:120px}
 #searchButton:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 4px 20px rgba(229,75,75,.6)}
 #searchButton:disabled{opacity:.6;cursor:not-allowed}
-#status{min-height:20px;font-style:italic;color:var(--subtle-text-color);margin:10px 0}
-#results{margin-top:30px;text-align:left;border-top:1px solid var(--border-color);padding-top:30px}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#FFF;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#status{min-height:50px;margin:15px 0;display:flex;align-items:center;justify-content:center;gap:10px}
+.status-content{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:8px;font-size:.95rem;animation:slideDown .3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.status-info{background:rgba(74,74,235,.2);color:var(--text-color);border:1px solid var(--border-color)}
+.status-error{background:rgba(229,75,75,.2);color:#FFB3B3;border:1px solid var(--accent-red)}
+.status-success{background:rgba(76,175,80,.2);color:#A5D6A7;border:1px solid var(--success-green)}
+.status-offline{background:rgba(255,152,0,.2);color:#FFD54F;border:1px solid var(--warning-orange)}
+.offline-banner{background:var(--warning-orange);color:#000;padding:10px;text-align:center;font-weight:700;position:fixed;top:0;left:0;right:0;z-index:9999;animation:slideDown .3s ease;display:none}
+.skeleton{background:linear-gradient(90deg,rgba(74,74,235,.1) 25%,rgba(74,74,235,.2) 50%,rgba(74,74,235,.1) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:20px;margin:10px 0}
+.skeleton-box{height:60px;margin:10px 0}
+#results{margin-top:30px;text-align:left;border-top:1px solid var(--border-color);padding-top:30px;opacity:0;animation:fadeInUp .5s ease forwards}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 #result-title{font-size:2rem;color:var(--text-color);background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0 0 25px}
 #results h3{margin-top:25px;color:var(--subtle-text-color);font-weight:400;border-bottom:1px solid var(--border-color);padding-bottom:10px}
 .result-list{list-style-type:none;padding-left:0;margin:0}
@@ -35,6 +49,17 @@ body{font-family:'Montserrat',sans-serif;background-color:var(--dark-bg);color:v
 .result-list li:hover{border-left-color:var(--accent-pink);transform:translateX(5px)}
 .result-list a{color:var(--text-color);text-decoration:none;transition:color .2s;display:block;width:100%;cursor:pointer}
 .result-list a:hover{color:var(--subtle-text-color)}
+.error-state{text-align:center;padding:40px 20px}
+.error-icon{font-size:4rem;margin-bottom:20px;animation:bounce .5s ease}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.error-message{font-size:1.2rem;color:var(--text-color);margin-bottom:15px}
+.error-detail{font-size:.9rem;color:var(--subtle-text-color);margin-bottom:25px}
+.error-actions{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{padding:12px 25px;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--accent-gradient);color:#FFF}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(217,114,255,.6)}
+.btn-secondary{background:rgba(74,74,235,.2);color:var(--text-color)}
+.btn-secondary:hover{background:rgba(74,74,235,.4)}
 .popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;justify-content:center;align-items:center;animation:fadeInOverlay .3s ease}
 @keyframes fadeInOverlay{from{opacity:0}to{opacity:1}}
 .popup-content{background:var(--container-bg);backdrop-filter:blur(10px);padding:30px;border-radius:12px;box-shadow:0 0 50px rgba(74,74,235,.6);border:2px solid var(--border-color);max-width:500px;width:90%;text-align:center;animation:slideIn .3s ease}
@@ -52,12 +77,19 @@ body{padding:0;align-items:stretch}
 .container{padding:20px 15px;border-radius:0;border:none;height:100%;max-height:100vh;box-shadow:none}
 .main-title{font-size:2.2rem}
 .search-wrapper{flex-direction:column}
+#searchButton{width:100%}
 .popup-content{padding:20px;width:85%}
 .popup-buttons{flex-direction:column}
+.error-actions{flex-direction:column}
+.btn{width:100%}
 }
     </style>
 </head>
 <body>
+    <div id="offline-banner" class="offline-banner">
+        ⚠️ Không có kết nối internet
+    </div>
+    
     <canvas id="particle-canvas"></canvas>
     
     <div id="popup" class="popup-overlay">
@@ -81,22 +113,12 @@ body{padding:0;align-items:stretch}
         </div>
         <div class="search-wrapper">
             <input type="text" id="searchInput" placeholder="Nhập code vào đây..." autocomplete="off">
-            <button id="searchButton">Tìm Kiếm</button>
+            <button id="searchButton">
+                <span id="buttonText">Tìm Kiếm</span>
+            </button>
         </div>
         <div id="status"></div>
-        <div id="results" style="display:none;">
-            <h2 id="result-title"></h2>
-            <div id="password-section" style="display:none">
-                <h3>Mật Khẩu:</h3>
-                <ul id="password-list" class="result-list"></ul>
-            </div>
-            <div id="note-section" style="display:none">
-                <h3>Ghi Chú:</h3>
-                <ul id="note-list" class="result-list"></ul>
-            </div>
-            <h3>Link Download</h3>
-            <ul id="link-list" class="result-list"></ul>
-        </div>
+        <div id="results" style="display:none;"></div>
     </div>
 
     <script>
@@ -108,17 +130,43 @@ body{padding:0;align-items:stretch}
       let cache={ads:[],timestamp:0};
       let dlLink='';
       const CACHE_TIME=3e5;
+      const MAX_RETRIES=3;
+      const RETRY_DELAYS=[1000,3000,5000];
       
-      // Debounce helper
-      const debounce=(fn,delay)=>{
-        let timer;
-        return function(...args){
-          clearTimeout(timer);
-          timer=setTimeout(()=>fn.apply(this,args),delay);
-        };
-      };
+      // Network status monitoring
+      let isOnline=navigator.onLine;
+      const offlineBanner=document.getElementById('offline-banner');
       
-      // Clean URL - Remove tracking params
+      window.addEventListener('online',()=>{
+        isOnline=true;
+        offlineBanner.style.display='none';
+        showStatus('✅ Đã kết nối lại internet','success');
+      });
+      
+      window.addEventListener('offline',()=>{
+        isOnline=false;
+        offlineBanner.style.display='block';
+        showStatus('⚠️ Mất kết nối internet','offline');
+      });
+      
+      // Status helper
+      function showStatus(msg,type='info'){
+        const stat=document.getElementById('status');
+        const className=`status-content status-${type}`;
+        
+        if(type==='loading'){
+          stat.innerHTML=`<div class="${className}"><div class="spinner"></div><span>${msg}</span></div>`;
+        }else{
+          const icons={info:'ℹ️',error:'❌',success:'✅',offline:'⚠️'};
+          stat.innerHTML=`<div class="${className}">${icons[type]||''} ${msg}</div>`;
+        }
+      }
+      
+      function clearStatus(){
+        document.getElementById('status').innerHTML='';
+      }
+      
+      // Clean URL
       function cleanURL(){
         const url=new URL(window.location.href);
         const trackingParams=['fbclid','gclid','utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
@@ -136,22 +184,21 @@ body{padding:0;align-items:stretch}
         }
       }
       
-      // Khởi tạo - preload ads ngay
+      // Init
       (async()=>{
-        cleanURL(); // Clean URL trước tiên
-        loadAds(); // Load async không chờ
+        cleanURL();
+        loadAds();
         const p=location.pathname;
         if(p.length>1){
           const c=p.substring(1);
           if(/^\d+$/.test(c)){
             const inp=document.getElementById('searchInput');
             inp.value=c;
-            // Không auto focus để tránh keyboard popup trên mobile
           }
         }
       })();
 
-      // Load quảng cáo - optimized
+      // Load ads
       async function loadAds(){
         const now=Date.now();
         if(cache.ads.length&&(now-cache.timestamp)<CACHE_TIME)return;
@@ -159,7 +206,7 @@ body{padding:0;align-items:stretch}
         try{
           const res=await fetch(`${API}?action=getAds`,{
             method:'GET',
-            cache:'force-cache' // Sử dụng browser cache
+            cache:'force-cache'
           });
           if(!res.ok)throw new Error(`HTTP ${res.status}`);
           const d=await res.json();
@@ -170,7 +217,7 @@ body{padding:0;align-items:stretch}
           }
         }catch(e){
           console.error('Ads load error:',e);
-          if(!cache.ads.length)cache.ads=[]; // Chỉ reset nếu chưa có data
+          if(!cache.ads.length)cache.ads=[];
         }
       }
 
@@ -193,26 +240,38 @@ body{padding:0;align-items:stretch}
         const visit=document.getElementById('popup-visit');
         const close=document.getElementById('popup-close');
         
-        const openLinks=()=>{
+        visit.onclick=()=>{
           window.open(ad.link,'_blank','noopener,noreferrer');
           window.open(dlLink,'_blank','noopener,noreferrer');
           pop.style.display='none';
         };
-        
-        const closeOnly=()=>{
+
+        close.onclick=()=>{
           window.open(dlLink,'_blank','noopener,noreferrer');
           pop.style.display='none';
         };
-        
-        visit.onclick=openLinks;
-        close.onclick=closeOnly;
       }
 
-      // Search handler - OPTIMIZED
+      // Button state management
+      function setButtonState(state){
+        const btn=document.getElementById('searchButton');
+        const btnText=document.getElementById('buttonText');
+        
+        btn.disabled=state==='loading';
+        
+        if(state==='loading'){
+          btn.innerHTML='<div class="spinner"></div><span>Đang tìm...</span>';
+        }else if(state==='retry'){
+          btn.innerHTML='<span>🔄 Thử Lại</span>';
+        }else{
+          btn.innerHTML='<span>Tìm Kiếm</span>';
+        }
+      }
+
+      // Search with retry
       const inp=document.getElementById('searchInput');
       const btn=document.getElementById('searchButton');
       
-      // Chỉ listen Enter key, không xử lý mọi keyup
       inp.addEventListener('keydown',e=>{
         if(e.key==='Enter'){
           e.preventDefault();
@@ -222,114 +281,218 @@ body{padding:0;align-items:stretch}
       
       btn.addEventListener('click',search);
 
-      // Prevent multiple simultaneous searches
       let isSearching=false;
+      let currentRetry=0;
 
       async function search(){
         if(isSearching)return;
         
-        const code=inp.value.trim();
-        const stat=document.getElementById('status');
-        const res=document.getElementById('results');
-        
-        if(!code){
-          stat.innerText="Vui lòng nhập code.";
+        // Check offline
+        if(!isOnline){
+          showStatus('Không có kết nối internet. Vui lòng kiểm tra mạng.','offline');
           return;
         }
         
+        const code=inp.value.trim();
+        
+        if(!code){
+          showStatus('Vui lòng nhập code','error');
+          return;
+        }
+        
+        currentRetry=0;
+        await performSearch(code);
+      }
+      
+      async function performSearch(code,retryCount=0){
         isSearching=true;
-        stat.innerText="Đang tìm kiếm...";
-        btn.disabled=true;
+        const res=document.getElementById('results');
         res.style.display='none';
         
+        // Show loading
+        setButtonState('loading');
+        if(retryCount>0){
+          showStatus(`Đang thử lại (${retryCount}/${MAX_RETRIES})...`,'loading');
+        }else{
+          showStatus('Đang tìm kiếm...','loading');
+        }
+        
+        // Show skeleton
+        showSkeleton();
+        
         try{
+          const controller=new AbortController();
+          const timeoutId=setTimeout(()=>controller.abort(),15000); // 15s timeout
+          
           const resp=await fetch(`${API}?action=search&code=${encodeURIComponent(code)}`,{
             method:'GET',
-            cache:'no-store'
+            cache:'no-store',
+            signal:controller.signal
           });
-          if(!resp.ok)throw new Error(`Lỗi ${resp.statusText}`);
+          
+          clearTimeout(timeoutId);
+          
+          if(!resp.ok){
+            throw new Error(resp.status===404?'NOT_FOUND':`HTTP_${resp.status}`);
+          }
+          
           const data=await resp.json();
+          
+          // Success
+          clearStatus();
+          setButtonState('normal');
           display(data);
-        }catch(e){
-          stat.innerText="Lỗi: "+e.message;
-        }finally{
-          btn.disabled=false;
           isSearching=false;
+          currentRetry=0;
+          
+        }catch(e){
+          console.error('Search error:',e);
+          
+          // Handle different error types
+          if(e.name==='AbortError'){
+            handleError('TIMEOUT',code,retryCount);
+          }else if(!isOnline){
+            handleError('OFFLINE',code,retryCount);
+          }else if(e.message==='NOT_FOUND'){
+            handleError('NOT_FOUND',code,retryCount);
+          }else{
+            handleError('NETWORK',code,retryCount);
+          }
         }
       }
       
-      function display(d){
-        const stat=document.getElementById('status');
+      function handleError(type,code,retryCount){
         const res=document.getElementById('results');
+        res.style.display='none';
         
-        if(d.error){
-          stat.innerText=d.error;
-          res.style.display='none';
+        const errors={
+          TIMEOUT:{
+            icon:'⏱️',
+            title:'Kết nối quá lâu',
+            detail:'Máy chủ phản hồi chậm. Vui lòng thử lại.',
+            canRetry:true
+          },
+          OFFLINE:{
+            icon:'📡',
+            title:'Không có kết nối',
+            detail:'Vui lòng kiểm tra internet và thử lại.',
+            canRetry:false
+          },
+          NOT_FOUND:{
+            icon:'🔍',
+            title:'Không tìm thấy code',
+            detail:`Code "${code}" không tồn tại trong hệ thống.`,
+            canRetry:false
+          },
+          NETWORK:{
+            icon:'⚠️',
+            title:'Lỗi kết nối',
+            detail:'Không thể kết nối máy chủ. Vui lòng thử lại.',
+            canRetry:true
+          }
+        };
+        
+        const err=errors[type]||errors.NETWORK;
+        
+        // Auto retry
+        if(err.canRetry&&retryCount<MAX_RETRIES){
+          const delay=RETRY_DELAYS[retryCount]||5000;
+          setTimeout(()=>{
+            performSearch(code,retryCount+1);
+          },delay);
           return;
         }
         
-        stat.innerText="";
-        document.getElementById('result-title').innerText=d.title;
+        // Show error state
+        setButtonState('retry');
+        showErrorState(err,code);
+        isSearching=false;
+        currentRetry=0;
+      }
+      
+      function showSkeleton(){
+        const res=document.getElementById('results');
+        res.innerHTML=`
+          <div class="skeleton skeleton-line" style="width:60%;height:30px;margin-bottom:20px"></div>
+          <div class="skeleton skeleton-box"></div>
+          <div class="skeleton skeleton-box"></div>
+          <div class="skeleton skeleton-box"></div>
+        `;
+        res.style.display='block';
+      }
+      
+      function showErrorState(err,code){
+        const res=document.getElementById('results');
+        res.innerHTML=`
+          <div class="error-state">
+            <div class="error-icon">${err.icon}</div>
+            <div class="error-message">${err.title}</div>
+            <div class="error-detail">${err.detail}</div>
+            <div class="error-actions">
+              <button class="btn btn-primary" onclick="search()">🔄 Thử Lại</button>
+              <button class="btn btn-secondary" onclick="location.reload()">🏠 Tải Lại Trang</button>
+            </div>
+          </div>
+        `;
+        res.style.display='block';
+        clearStatus();
+      }
+      
+      function display(d){
+        setButtonState('normal');
+        clearStatus();
+        const res=document.getElementById('results');
         
-        // Password
-        const pwSec=document.getElementById('password-section');
-        const pwList=document.getElementById('password-list');
-        pwList.innerHTML='';
-        if(d.passwords?.length){
-          const frag=document.createDocumentFragment();
-          d.passwords.forEach(p=>{
-            const li=document.createElement('li');
-            li.textContent=p;
-            frag.appendChild(li);
+        if(d.error){
+          showErrorState({
+            icon:'❌',
+            title:'Có lỗi xảy ra',
+            detail:d.error,
+            canRetry:false
           });
-          pwList.appendChild(frag);
-          pwSec.style.display='block';
-        }else{
-          pwSec.style.display='none';
+          return;
+        }
+        
+        let html=`<h2 id="result-title">${d.title||'Kết quả'}</h2>`;
+        
+        // Passwords
+        if(d.passwords?.length){
+          html+=`<div>
+            <h3>Mật Khẩu:</h3>
+            <ul class="result-list">`;
+          d.passwords.forEach(p=>{
+            html+=`<li>${p}</li>`;
+          });
+          html+=`</ul></div>`;
         }
         
         // Notes
-        const noteSec=document.getElementById('note-section');
-        const noteList=document.getElementById('note-list');
-        noteList.innerHTML='';
         if(d.notes?.length){
-          const frag=document.createDocumentFragment();
+          html+=`<div>
+            <h3>Ghi Chú:</h3>
+            <ul class="result-list">`;
           d.notes.forEach(n=>{
-            const li=document.createElement('li');
-            li.textContent=n;
-            frag.appendChild(li);
+            html+=`<li>${n}</li>`;
           });
-          noteList.appendChild(frag);
-          noteSec.style.display='block';
-        }else{
-          noteSec.style.display='none';
+          html+=`</ul></div>`;
         }
         
         // Links
-        const linkList=document.getElementById('link-list');
-        linkList.innerHTML='';
+        html+=`<div><h3>Link Download</h3><ul class="result-list" id="link-list">`;
         if(d.links?.length){
-          const frag=document.createDocumentFragment();
-          d.links.forEach(link=>{
-            const li=document.createElement('li');
-            const a=document.createElement('a');
-            a.href='javascript:void(0)';
-            a.textContent=getLinkTxt(link);
-            a.onclick=e=>{
-              e.preventDefault();
-              showPop(link);
-            };
-            li.appendChild(a);
-            frag.appendChild(li);
+          d.links.forEach((link,i)=>{
+            html+=`<li><a href="javascript:void(0)" onclick="showPop('${link}')">${getLinkTxt(link)}</a></li>`;
           });
-          linkList.appendChild(frag);
         }else{
-          const li=document.createElement('li');
-          li.textContent='Không có link download.';
-          linkList.appendChild(li);
+          html+=`<li>Không có link download.</li>`;
         }
+        html+=`</ul></div>`;
         
+        res.innerHTML=html;
         res.style.display='block';
+        
+        showStatus(' Tìm kiếm thành công!','success');
+        setTimeout(clearStatus,3000);
       }
       
       function getLinkTxt(url){
@@ -356,33 +519,28 @@ body{padding:0;align-items:stretch}
     
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
-      // Lazy load particles sau khi page load xong
       window.addEventListener('load',()=>{
         setTimeout(()=>{
           tsParticles.load("particle-canvas",{
             fpsLimit:60,
             particles:{
-              number:{value:80,density:{enable:!0,value_area:800}}, // Giảm số particles
+              number:{value:40,density:{enable:!0,value_area:800}},
               color:{value:"#A0A0E0"},
               shape:{type:"circle"},
               opacity:{value:.5,random:!0},
               size:{value:{min:1,max:3}},
               links:{enable:!0,distance:150,color:"#6A6ADF",opacity:.4,width:1},
-              move:{enable:!0,speed:1,direction:"none",out_mode:"out"} // Giảm speed
+              move:{enable:!0,speed:1,direction:"none",out_mode:"out"}
             },
             interactivity:{
               detect_on:"canvas",
-              events:{
-                onhover:{enable:!0,mode:"repulse"},
-                resize:!0
-              },
-              modes:{repulse:{distance:250,duration:.3}} // Giảm distance và duration
+              events:{onhover:{enable:!0,mode:"repulse"},resize:!0},
+              modes:{repulse:{distance:150,duration:.3}}
             },
             detectRetina:!0
           });
-        },500); // Delay 500ms để trang load xong
+        },500);
       });
     </script>
 </body>
 </html>
-
