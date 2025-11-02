@@ -54,28 +54,7 @@
 
       document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') { handleSearch(); } });
       
-      async function handleSearch() { 
-          const code = document.getElementById('searchInput').value; 
-          const statusDiv = document.getElementById('status'); 
-          const searchButton = document.getElementById('searchButton'); 
-          statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code."; 
-          searchButton.disabled = true; 
-          document.getElementById('results').style.display = 'none'; 
-          if (!code) { 
-              searchButton.disabled = false; 
-              return; 
-          } 
-          try { 
-              const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`); 
-              if (!response.ok) { 
-                  throw new Error(`Lỗi mạng: ${response.statusText}`); 
-              } 
-              const data = await response.json(); 
-              displayResults(data); 
-          } catch (error) { 
-              displayError(error); 
-          } 
-      }
+      async function handleSearch() { /* Giữ nguyên không đổi */ const code = document.getElementById('searchInput').value; const statusDiv = document.getElementById('status'); const searchButton = document.getElementById('searchButton'); statusDiv.innerText = code ? "Đang tìm kiếm..." : "Vui lòng nhập code."; searchButton.disabled = true; document.getElementById('results').style.display = 'none'; if (!code) { searchButton.disabled = false; return; } try { const response = await fetch(`${SCRIPT_URL}?action=search&code=${encodeURIComponent(code)}`); if (!response.ok) { throw new Error(`Lỗi mạng: ${response.statusText}`); } const data = await response.json(); displayResults(data); } catch (error) { displayError(error); } }
       
       function displayResults(e) { 
           document.getElementById('searchButton').disabled = false; 
@@ -123,7 +102,10 @@
                   a.href = link; 
                   a.target = "_blank"; 
                   a.textContent = getLinkDetails(link).text; 
-                  // **ĐÃ XÓA** event listener gọi hàm quảng cáo ở đây
+                  // **CẬP NHẬT:** Thêm event listener để gọi hàm quảng cáo
+                  a.addEventListener('click', function(event) {
+                      handleLinkClick(event, link);
+                  });
                   li.appendChild(a); 
                   linkList.appendChild(li); 
               }); 
@@ -135,31 +117,34 @@
           resultsDiv.style.display = 'block'; 
       }
       
-      function displayError(e) { 
-          document.getElementById('searchButton').disabled = false; 
-          document.getElementById('status').innerText = "Lỗi: " + e.message; 
-      }
+      function displayError(e) { /* Giữ nguyên không đổi */ document.getElementById('searchButton').disabled = false; document.getElementById('status').innerText = "Lỗi: " + e.message; }
       
-      function getLinkDetails(url) { 
-          const lowerUrl = url.toLowerCase(); 
-          const linkMappings = [
-              { domain: 'drive.google.com', text: 'Link Google Drive' },
-              { domain: 'photos.app.goo.gl', text: 'Link Google Photo' },
-              { domain: 'fshare.vn', text: 'Link Fshare' },
-              { domain: 'mega.nz', text: 'Link Mega' },
-              { domain: 'mediafire.com', text: 'Link MediaFire' },
-              { domain: 'terabox.com', text: 'Link Terabox' },
-              { domain: 't.me', text: 'Link Telegram' },
-              { domain: 'telegram', text: 'Link Telegram' },
-              { domain: 'dropbox.com', text: 'Link Dropbox' },
-              { domain: 'usersdrive.com', text: 'Link UsersDrive' }
-          ]; 
-          for (const mapping of linkMappings) { 
-              if (lowerUrl.includes(mapping.domain)) { 
-                  return { text: mapping.text }; 
-              } 
-          } 
-          return { text: 'Link Download' }; 
+      function getLinkDetails(url) { /* Giữ nguyên không đổi */ const lowerUrl = url.toLowerCase(); const linkMappings = [{ domain: 'drive.google.com', text: 'Link Google Drive' },{ domain: 'photos.app.goo.gl', text: 'Link Google Photo' },{ domain: 'fshare.vn', text: 'Link Fshare' },{ domain: 'mega.nz', text: 'Link Mega' },{ domain: 'mediafire.com', text: 'Link MediaFire' },{ domain: 'terabox.com', text: 'Link Terabox' },{ domain: 't.me', text: 'Link Telegram' },{ domain: 'telegram', text: 'Link Telegram' },{ domain: 'dropbox.com', text: 'Link Dropbox' },{ domain: 'usersdrive.com', text: 'Link UsersDrive' }]; for (const mapping of linkMappings) { if (lowerUrl.includes(mapping.domain)) { return { text: mapping.text }; } } return { text: 'Link Download' }; }
+
+      /**
+       * **HÀM MỚI:** Xử lý click link, mở link chính và gọi server lấy link quảng cáo.
+       */
+      async function handleLinkClick(event, linkUrl) {
+        // Ngăn hành vi mặc định của thẻ <a>
+        event.preventDefault();
+
+        // 1. Mở link chính ngay lập tức để ưu tiên tốc độ cho người dùng
+        window.open(linkUrl, '_blank');
+
+        // 2. Gọi server để lấy link quảng cáo và mở nó sau
+        try {
+          const response = await fetch(`${SCRIPT_URL}?action=getAdLink`);
+          if (!response.ok) return; // Nếu lỗi thì không làm gì cả
+
+          const data = await response.json();
+          // Nếu có link quảng cáo trả về, mở nó trong tab mới
+          if (data && data.adUrl) {
+            window.open(data.adUrl, '_blank');
+          }
+        } catch (err) {
+          // Lỗi xảy ra cũng không ảnh hưởng tới người dùng, chỉ log ra console
+          console.error("Lỗi khi lấy link quảng cáo: ", err);
+        }
       }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
